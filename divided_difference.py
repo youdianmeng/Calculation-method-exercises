@@ -1,4 +1,4 @@
-def divided_difference(x, y):
+def divided_difference(x=[0.40, 0.55, 0.65, 0.80, 0.90], y=[0.41075, 0.57815, 0.69675, 0.88811, 1.02652]):
     # x, y 分别为样本点坐标向量
     # 检查输入
     if len(x) != len(y):
@@ -17,10 +17,10 @@ def divided_difference(x, y):
             table[i].append(diff)
     # 返回值
     return table
-# 测试
-x = [0.40, 0.55, 0.65, 0.80, 0.90]
-y = [0.41075, 0.57815, 0.69675, 0.88811, 1.02652]
-table = divided_difference(x, y)
 
-for row in table:
-   print(row)
+
+if __name__ == '__main__':
+
+    table = divided_difference()
+    for row in table:
+        print(row)

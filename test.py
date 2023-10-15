@@ -1,3 +1,4 @@
-A = [1,2,3,4,4,5,6,7]
-
-print(A[::2])
+import numpy as np
+lamb = map(lambda i: (1/2)**(i-1), range(1, 11))
+lamb = list(lamb)
+print(lamb)

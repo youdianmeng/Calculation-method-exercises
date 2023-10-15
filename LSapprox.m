@@ -15,19 +15,19 @@ function LSapprox(x, y, n)
   x = x(:)';
   y = y(:)';
 
-  % 构造矩阵A和向量b
-  A = zeros(n+1, n+1);
-  b = zeros(n+1, 1);
+  % 构造矩阵x_ij和向量yk
+  x_ij = zeros(n+1, n+1);
+  yk = zeros(n+1, 1);
 
   for i = 1:n+1
       for j = 1:n+1
-          A(i, j) = sum(x.^(i+j-2));
+          x_ij(i, j) = sum(x.^(i+j-2));
       end
-      b(i) = sum(y.*x.^(i-1));
+      yk(i) = sum(y.*x.^(i-1));
   end
 
   % 求解线性方程组
-  coefficients = A \ b;
+  coefficients = x_ij \ yk;
 
   % 打印拟合多项式的系数
   fprintf('拟合多项式的系数为：');
