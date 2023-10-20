@@ -27,6 +27,7 @@ function result = univariate_search(fun, X0, epsilon, AR_h, Goldmin_epsilon)
 
     X0 = X0(:);
     n = length(X0);
+    
     x0 = X0;
     iter = 0;
     while 1
@@ -36,14 +37,17 @@ function result = univariate_search(fun, X0, epsilon, AR_h, Goldmin_epsilon)
         x1 = x0;
         for index = 1 : n
             fprintf('方向=%d,', index);
+            direction = zeros(n, 1);
+            direction(index) = 1;
+
             % index方向上的，x0为初始点，使用进退法得到的搜索区间
-            D = Opt_AdvanceRetreat(fun, x0, AR_h, index);
-            fprintf('搜索区间=');disp(D);
+            D = Opt_AdvanceRetreat(fun, x0, 2, AR_h, direction);
+            fprintf('搜索区间=\n');disp(D);
             % 得到变量轮换该方向上的最佳目标点坐标 alpha
-            alpha = goldmin(fun, D, Goldmin_epsilon, x0, index);
-            fprintf('该方向目标点坐标=%f\n',alpha);
+            alpha = goldmin(fun, D(:, 1), D(:, 2), Goldmin_epsilon);
+            fprintf('该方向目标点坐标=\n');disp(alpha);
             
-            x0(index) = alpha;
+            x0 = alpha;
 %             % 更新S
 %             S = zeros(n, 1);
 %             S(index) = 1;
@@ -61,13 +65,9 @@ function result = univariate_search(fun, X0, epsilon, AR_h, Goldmin_epsilon)
         if sum((x0 - x1).^2) < epsilon
             break;
         end
-        if iter == 5
-            break;
-        end
 
     end
 
     result = [fun(x0) x0(:)'];
-
 end
 

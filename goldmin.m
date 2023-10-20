@@ -1,25 +1,20 @@
-function xmin = goldmin(fun, D, epsilon, alpha, index)
+function xmin = goldmin(fun, A, B, epsilon)
     %% 黄金分割法求最小值
     % fun: 函数句柄
-    % D: 初始搜索区间
-    % 迭代精度
-    % alpha: 函数初值 向量,可针对多元函数
-    % index: 变量轮转法时使用， default = 1
+    % A: 初始搜索区间初始点
+    % B: 初始搜索区间终止点
+    % epsilon: 迭代精度
 
     %{运行示例代码：
-    % clear all;fun = @(x) x^2-2*x +1;D=[0,1];epsilon=0.0001;goldmin(fun,D,epsilon) }
+    % clear all;fun = @(x) x^2-2*x +1;A=0,B=2;epsilon=0.0001;goldmin(fun,A,B,epsilon) }
     
-    n = length(alpha);
-    alpha(index) = 0;
-    S = zeros(n, 1);
-    S(index) = 1;
-    a = D(1);
-    b = D(2);
+    a = A;
+    b = B;
     % a1一直在左侧
     a1 = b - 0.618 * (b - a);
     a2 = a + 0.618 * (b - a);
-    fx1 = fun(S*a1 + alpha);
-    fx2 = fun(S*a2 + alpha);
+    fx1 = fun(a1);
+    fx2 = fun(a2);
 
     while b - a > epsilon
 
@@ -28,14 +23,14 @@ function xmin = goldmin(fun, D, epsilon, alpha, index)
             a2 = a1;
             fx2 = fx1;
             a1 = b - 0.618 * (b - a);
-            fx1 = fun(S*a1 + alpha);
+            fx1 = fun(a1);
 
         else
             a = a1;
             a1 = a2;
             fx1 = fx2;
             a2 = a + 0.618 * (b - a);
-            fx2 = fun(S*a2 + alpha);
+            fx2 = fun(a2);
 
         end
 
