@@ -44,7 +44,7 @@ function result = univariate_search(fun, X0, epsilon, AR_h, Goldmin_epsilon)
             D = Opt_AdvanceRetreat(fun, x0, 2, AR_h, direction);
             fprintf('搜索区间=\n');disp(D);
             % 得到变量轮换该方向上的最佳目标点坐标 alpha
-            alpha = goldmin(fun, D(:, 1), D(:, 2), Goldmin_epsilon);
+            alpha = Goldmin(fun, D(:, 1), D(:, 2), Goldmin_epsilon);
             fprintf('该方向目标点坐标=\n');disp(alpha);
             
             x0 = alpha;

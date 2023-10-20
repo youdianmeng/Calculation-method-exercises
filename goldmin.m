@@ -1,4 +1,4 @@
-function xmin = goldmin(fun, A, B, epsilon)
+function xmin = Goldmin(fun, A, B, epsilon)
     %% 黄金分割法求最小值
     % fun: 函数句柄
     % A: 初始搜索区间初始点
@@ -6,7 +6,7 @@ function xmin = goldmin(fun, A, B, epsilon)
     % epsilon: 迭代精度
 
     %{运行示例代码：
-    % clear all;fun = @(x) x^2-2*x +1;A=0,B=2;epsilon=0.0001;goldmin(fun,A,B,epsilon) }
+    % clear all;fun = @(x) x^2-2*x +1;A=0,B=2;epsilon=0.0001;Goldmin(fun,A,B,epsilon) }
     
     a = A;
     b = B;
