@@ -7,7 +7,11 @@ function xmin = Goldmin(fun, A, B, epsilon)
 
     %{运行示例代码：
     % clear all;fun = @(x) x^2-2*x +1;A=0,B=2;epsilon=0.0001;Goldmin(fun,A,B,epsilon) }
-    
+
+    if nargin < 4
+      error('检查参数个数')
+    end
+
     a = A;
     b = B;
     % a1一直在左侧

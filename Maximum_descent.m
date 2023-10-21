@@ -1,12 +1,12 @@
-function result = Univariate_search(fun, X0, epsilon, AR_h, Goldmin_epsilon)
-    %% n维变量轮转法
+function result = Maximum_descent(fun, X0, epsilon, AR_h, Goldmin_epsilon)
+    %% n维最速下降法，与变量轮转法的唯一区别在于迭代方向是梯度下降方向
     % fun: 目标函数,引用时记得加 @
     % X0： 迭代起始点
     % epsilon: 迭代精度
     % AR_h： 进退法步长
     % Goldmin_epsilon: 黄金分割法迭代误差
 
-    % 测试代码：Univariate_search(@func, [0, 0], 0.035, 0.0125, 0.0125)
+    % 测试代码：Maximum_descent(@func, [0, 0], 0.035, 0.0125, 0.0125)
 
     %-----------------------测试图像-------------------------%
     % 测试图像
@@ -38,8 +38,9 @@ function result = Univariate_search(fun, X0, epsilon, AR_h, Goldmin_epsilon)
         x1 = x0;
         for index = 1 : n
             fprintf('方向=%d,', index);
-            direction = zeros(n, 1);
-            direction(index) = 1;
+
+            direction = Toget_gradient(fun, x0);
+            direction = -direction / norm(direction);
 
             % index方向上的，x0为初始点，使用进退法得到的搜索区间
             D = Opt_AdvanceRetreat(fun, x0, 2, AR_h, direction);
@@ -71,4 +72,3 @@ function result = Univariate_search(fun, X0, epsilon, AR_h, Goldmin_epsilon)
 
     result = [fun(x0) x0(:)'];
 end
-

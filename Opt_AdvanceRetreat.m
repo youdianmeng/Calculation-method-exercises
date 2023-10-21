@@ -5,16 +5,18 @@ function  D = Opt_AdvanceRetreat(fun, initial, step, beta, direction)
     % step: 步长,迭代为h,2h,4h,……
     % beta: 进退法迭代factor,h,3h,9h……
     % direction: 变量轮转法时使用， default = 1,为迭代方向
+
     % {测试代码：clear all;fun = @(x) x^2-2*x +1;initial=0;step=0.1;beta=2;direction=[1];Opt_AdvanceRetreat(fun,initial,step,beta,direction)}
-    if nargin < 4
+
+    if nargin < 5
         error('检查输入参数个数！')
     end
-    
+
     initial = initial(:);
     direction = direction(:);
     % 初始化和初次比较
-    xl = zeros(length(initial), 1);
-    xr = zeros(length(initial), 1);
+    xl = zeros(size(initial));
+    xr = zeros(size(initial));
 
     x0 = initial;
     x1 = initial + direction*step;
