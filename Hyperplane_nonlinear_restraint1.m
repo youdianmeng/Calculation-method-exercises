@@ -1,4 +1,4 @@
-function [c, ceq] = Hyperplane_nonlinear_restraint(alpha, X_plus, X_minus, s_and_r_plus_minus)
+function [c, ceq] = Hyperplane_nonlinear_restraint1(alpha, X_plus, X_minus, s_and_r_plus_minus)
     %% 超平面参数非线性约束函数
     % alpha: 超平面参数权重向量，包括alpha_plus and alpha_minus, alpha_plus在前
     % X_plus: 正样本集合

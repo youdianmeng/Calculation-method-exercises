@@ -1,4 +1,4 @@
-%% 线性超圆盘二分类器，利用一对一策略推广及多分类问题
+%% 非线性超圆盘二分类器，利用一对一策略推广及多分类问题
 % Z—score归一化
 % 随机划分数据集
 
@@ -18,7 +18,7 @@ trainData = []; testData = []; % 初始化训练集和测试集
 
 for i = 1:length(classes)
     classData = data(labels == classes(i), :); 
-    numTrain = round(0.80 * size(classData, 1)); % 训练集的数量
+    numTrain = round(0.10 * size(classData, 1)); % 训练集的数量
     indices = randperm(size(classData, 1)); % 随机排列索引
     trainData = [trainData; classData(indices(1:numTrain), :)]; 
     testData = [testData; classData(indices(numTrain+1:end), :)]; 
@@ -48,6 +48,7 @@ X_test = (X_test - meanX_train) ./ stdX_train;
 %%%------------------------------------------------ 训练 -------------------------------------------------%%%
 %------------------------------------------- 求解s和r --------------------------------------------%
 
+beta_ij = zeros(Num, M_train);
 s_and_r = zeros(Num, N_train + 1); % 每行最后一个元素为r
 for i = 1 : Num
     X = X_train(Y_train==i, :);
@@ -59,7 +60,7 @@ for i = 1 : Num
 %     filename = ['Class', num2str(i), 'Data.mat']; % 创建文件名
 %     save(filename, 'X'); % 保存数据
 
-    % 设定拉格朗日系数beta初值
+    % 设定拉格朗日系数beta初值,一个样本一个beta
     beta_initial = ones(M, 1) / M;
 
     % 设定线性等式约束
@@ -73,6 +74,7 @@ for i = 1 : Num
     options = optimoptions('fmincon','MaxFunctionEvaluations',1e6);  % 设置最大函数评估次数为 1000000
     % @(beta)Objective_Function1(beta, X),@(beta) 表示输入要优化的值为beta，X不动
     beta = fmincon(@(beta)Objective_Function1(beta, X), beta_initial, [], [], Aeq, beq, lb, [], [], options);  % 使用新的 options 变量
+    beta_ij(i, 1:M) = beta'; % 保存 i 类别的beta
 
     % 求解s and r
     s = sum(beta.*X);
@@ -80,8 +82,9 @@ for i = 1 : Num
     s_and_r(i, :) = [s, r];
 
 end
-disp(s_and_r);
-%% 线性超圆盘，未采用核函数
+% disp(s_and_r);
+
+%% 非线性超圆盘，采用高斯核函数
 
 %------------------------------------------- 求解分类超平面参数 --------------------------------------------%
 % one vs. one 策略
@@ -99,7 +102,7 @@ for i = 1 : Num - 1
         M_plus = size(X_plus, 1);
         M_minus = size(X_minus, 1);
 
-        % 设定超平面参数初值
+        % 设定超平面参数初值，都为列
         alpha_plus = ones(M_plus, 1) / M_plus;
         alpha_minus = ones(M_minus, 1) / M_minus;
         alpha_initial = [alpha_plus; alpha_minus];
@@ -110,14 +113,17 @@ for i = 1 : Num - 1
         Aeq(2, M_plus+1:end) = 1;
         beq = [1; 1];
         
-        % 设定非线性约束
-        s_and_r_plus_minus = s_and_r([i, j], :);
-        nonlcon = @(alpha)Hyperplane_nonlinear_restraint1(alpha, X_plus, X_minus, s_and_r_plus_minus);
+        % 设定非线性约束,只用r，不用s
+        r_plus_minus = s_and_r([i, j], end);
+        beta_plus = beta_ij(i, 1:M_plus)';
+        beta_minus = beta_ij(j, 1:M_minus)';
+        beta_plus_minus = [beta_plus; beta_minus];
+        nonlcon = @(alpha)Hyperplane_nonlinear_restraint2(alpha, beta_plus_minus, X_plus, X_minus, r_plus_minus);
 
         % 求解分类超平面参数权重向量, 返回最佳alpha
         options = optimoptions('fmincon','MaxFunctionEvaluations',1e6);  % 设置最大函数评估次数为 1000000
         % @(beta)Objective_Function1(beta, X),@(beta) 表示输入要优化的值为beta，X不动
-        alpha = fmincon(@(alpha)Objective_Function2(alpha, X_plus, X_minus), alpha_initial, [], [], Aeq, beq, [], [], nonlcon, options);  % 使用新的 options 变量
+        alpha = fmincon(@(alpha)Objective_Function3(alpha, X_plus, X_minus), alpha_initial, [], [], Aeq, beq, [], [], nonlcon, options);  % 使用新的 options 变量
         
 
         % 求解分类超平面参数
@@ -138,6 +144,7 @@ for i = 1 : Num - 1
 
     end
 end
+
 
 %%
 Y_test_pred = mode(fx_ij, 2);
