@@ -1,9 +1,17 @@
-folder = 'E:\Data\SEU Dataset\gearbox\gearset'; % 你的文件夹路径
-files = dir(fullfile(folder, '*.csv')); % 获取文件夹中所有以.csv结尾的文件
+% 指定文件夹路径
+folder_path = 'F:\python_learning\Calculation-method-exercises\pretreatment_HD\SEU_ed';
+% 获取文件夹中所有.txt文件的信息
+files = dir(fullfile(folder_path, '*.csv'));
 
-data = cell(1, length(files)); % 创建一个cell数组来存储每个文件的数据
+% 定义一个cell数组，用于存储所有文件的数据
+data = cell(1, length(files));
 
+% 遍历每个.txt文件
 for i = 1:length(files)
-    filename = fullfile(folder, files(i).name); % 获取当前文件的完整路径
-    data{i} = readlines(filename); % 假设文件是以.csv格式存储的，可以使用csvread函数读取数据
+    % 获取文件名（包括扩展名）
+    filename = files(i).name;
+    % 打印文件名
+    data{1} = readtable(filename);
+    
+
 end
