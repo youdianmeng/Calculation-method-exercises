@@ -148,7 +148,7 @@ end
 
 %%
 Y_test_pred = mode(fx_ij, 2);
-disp([fx_ij, Y_test_pred, Y_test]);
+%disp([fx_ij, Y_test_pred, Y_test]);
 % 返回准确度
 accuracy = sum(Y_test_pred==Y_test) / M_test;
 %disp(w_and_b);
