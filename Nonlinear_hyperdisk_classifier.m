@@ -83,7 +83,8 @@ for i = 1 : Num
 
 end
 % disp(s_and_r);
-
+disp(beta_ij);
+pause;
 %% 非线性超圆盘，采用高斯核函数
 
 %------------------------------------------- 求解分类超平面参数 --------------------------------------------%
@@ -124,8 +125,8 @@ for i = 1 : Num - 1
         options = optimoptions('fmincon','MaxFunctionEvaluations',1e6);  % 设置最大函数评估次数为 1000000
         % @(beta)Objective_Function1(beta, X),@(beta) 表示输入要优化的值为beta，X不动
         alpha = fmincon(@(alpha)Objective_Function3(alpha, X_plus, X_minus), alpha_initial, [], [], Aeq, beq, [], [], nonlcon, options);  % 使用新的 options 变量
-        
-
+        disp(alpha);
+        pause;
         % 求解分类超平面参数
         w = sum(alpha(1:M_plus).*X_plus, 1) - sum(alpha(M_plus+1, end).*X_minus, 1); % 行向量
         b = -1/2 * w * (sum(alpha(1:M_plus).*X_plus, 1) + sum(alpha(M_plus+1, end).*X_minus, 1))';
